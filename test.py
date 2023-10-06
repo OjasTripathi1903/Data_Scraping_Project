@@ -1,5 +1,6 @@
 import yfinance as yf
 import pandas as pd
+import prettify as pfy
 
 
 def get_income_statement(symbol):
@@ -9,7 +10,9 @@ def get_income_statement(symbol):
     income_statement = stock.financials
     # Create a Pandas DataFrame from the data
     df = pd.DataFrame(income_statement)
-    return df
+    # Only output the specific values
+    output = pfy.prettifyIncome(df)
+    return output
 
 
 def get_balance_statement(symbol):
@@ -21,7 +24,9 @@ def get_balance_statement(symbol):
     # Create a Pandas DataFrame from the data
     df = pd.DataFrame(balancesheet)
 
-    return df
+    output = pfy.prettifyBalance(df)
+
+    return output
 
 
 def get_cash_flow(symbol):
@@ -32,8 +37,8 @@ def get_cash_flow(symbol):
     cash_flow = stock.cashflow
     # Create a Pandas DataFrame from the data
     df = pd.DataFrame(cash_flow)
-
-    return df
+    output = pfy.prettifyCash(df)
+    return output
 
 
 def save_to_excel(dataframe, filename):
