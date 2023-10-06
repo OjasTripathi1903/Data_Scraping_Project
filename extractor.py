@@ -53,9 +53,11 @@ def save_to_excel(dataframe, filename):
     dataframe.to_excel(filename, index=True)
 
 
-def main():
+logo = "MMM"
+
+
+def master_output(symbol):
     # Define the stock symbol for NVIDIA Corporation
-    symbol = "NVDA"
 
     # Make API request to get the income statement data
     employee_count = get_employee_count(symbol)
@@ -63,10 +65,22 @@ def main():
     balance_sheet = get_balance_statement(symbol)
     cash_flow = get_cash_flow(symbol)
 
-    spacer_employee_count = pd.Series("Employee Count")
-    spacer_income_statement = pd.Series("Income Statement")
-    spacer_balance_sheet = pd.Series("Balance Sheet")
-    spacer_cash_flow = pd.Series("Cash Flow")
+    # Create Spacers for neatness
+    # TODO: Turn this into functions for compactness
+    empty_cell = ""
+
+    spacer_employee_count = pd.DataFrame([empty_cell])
+    spacer_employee_count.set_index(pd.Index(["Employee Count"]), inplace=True)
+
+    spacer_income_statement = pd.DataFrame([empty_cell])
+    spacer_income_statement.set_index(pd.Index(["Income Statement"]), inplace=True)
+
+    spacer_balance_sheet = pd.DataFrame([empty_cell])
+    spacer_balance_sheet.set_index(pd.Index(["Balance Sheet"]), inplace=True)
+
+    spacer_cash_flow = pd.DataFrame([empty_cell])
+    spacer_cash_flow.set_index(pd.Index(["Cash Flow"]), inplace=True)
+
     array = [
         spacer_income_statement,
         income_statement,
@@ -80,7 +94,8 @@ def main():
     # Save the data to an Excel sheet
     combined = pd.concat(array)
     save_to_excel(combined, "Data.xlsx")
+    return combined
 
 
 if __name__ == "__main__":
-    main()
+    master_output(logo)
