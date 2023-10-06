@@ -6,16 +6,20 @@ import prettify as pfy
 def get_employee_count(symbol):
     logo = yf.Ticker("MMM")
     output = logo.info
+
     filtered_data = {"Full Time Employees": [output.get("fullTimeEmployees")]}
     employee_df = pd.DataFrame.from_dict(filtered_data, orient="index")
+
     return employee_df
 
 
 def get_income_statement(symbol):
     # Use the yfinance package to retrieve the income statement data
     stock = yf.Ticker(symbol)
+
     # Get the income statement
     income_statement = stock.financials
+
     # Create a Pandas DataFrame from the data
     df = pd.DataFrame(income_statement)
     # Only output the specific values
@@ -29,6 +33,7 @@ def get_balance_statement(symbol):
 
     # Get the balance statement
     balancesheet = stock.balance_sheet
+
     # Create a Pandas DataFrame from the data
     df = pd.DataFrame(balancesheet)
 
