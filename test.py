@@ -3,6 +3,14 @@ import pandas as pd
 import prettify as pfy
 
 
+def get_employee_count(symbol):
+    logo = yf.Ticker("MMM")
+    output = logo.info
+    filtered_data = {"Full Time Employees": [output.get("fullTimeEmployees")]}
+    employee_df = pd.DataFrame(filtered_data.items(), rows=["Full Time Employees"])
+    return employee_df
+
+
 def get_income_statement(symbol):
     # Use the yfinance package to retrieve the income statement data
     stock = yf.Ticker(symbol)
@@ -32,7 +40,6 @@ def get_balance_statement(symbol):
 def get_cash_flow(symbol):
     # Use the yfinance package to retrieve the income statement data
     stock = yf.Ticker(symbol)
-
     # Get the cash flow
     cash_flow = stock.cashflow
     # Create a Pandas DataFrame from the data
@@ -51,10 +58,12 @@ def main():
     symbol = "NVDA"
 
     # Make API request to get the income statement data
+    employee_count = get_employee_count(symbol)
     income_statement = get_income_statement(symbol)
     balance_sheet = get_balance_statement(symbol)
     cash_flow = get_cash_flow(symbol)
 
+    spacer_employee_count = pd.Series("Employee Count")
     spacer_income_statement = pd.Series("Income Statement")
     spacer_balance_sheet = pd.Series("Balance Sheet")
     spacer_cash_flow = pd.Series("Cash Flow")
@@ -65,6 +74,8 @@ def main():
         balance_sheet,
         spacer_cash_flow,
         cash_flow,
+        spacer_employee_count,
+        employee_count,
     ]
     # Save the data to an Excel sheet
     combined = pd.concat(array)
