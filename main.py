@@ -7,7 +7,7 @@ def get_employee_count(symbol):
     logo = yf.Ticker("MMM")
     output = logo.info
     filtered_data = {"Full Time Employees": [output.get("fullTimeEmployees")]}
-    employee_df = pd.DataFrame(filtered_data.items(), rows=["Full Time Employees"])
+    employee_df = pd.DataFrame.from_dict(filtered_data, orient="index")
     return employee_df
 
 
