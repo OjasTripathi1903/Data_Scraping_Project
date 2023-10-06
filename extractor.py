@@ -4,7 +4,7 @@ import prettify as pfy
 
 
 def get_employee_count(symbol):
-    logo = yf.Ticker("MMM")
+    logo = yf.Ticker(symbol)
     output = logo.info
 
     filtered_data = {"Full Time Employees": [output.get("fullTimeEmployees")]}
