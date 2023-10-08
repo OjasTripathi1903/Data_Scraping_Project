@@ -58,6 +58,12 @@ def save_to_excel(dataframe, filename):
     dataframe.to_excel(filename, index=True)
 
 
+def spacer_creater(index_title: str):
+    data = {index_title: ""}
+    output = pd.DataFrame(data=data.values(), index=data.keys())
+    return output
+
+
 logo = "MMM"
 
 
@@ -71,27 +77,31 @@ def master_output(symbol):
     cash_flow = get_cash_flow(symbol)
 
     # Create Spacers for neatness
-    # TODO: Turn this into functions for compactness
-    empty_cell = ""
 
-    spacer_employee_count = pd.DataFrame([empty_cell])
-    spacer_employee_count.set_index(pd.Index(["Employee Count"]), inplace=True)
+    # TODO: Turn this into functions for compactness and find better ways
 
-    spacer_income_statement = pd.DataFrame([empty_cell])
-    spacer_income_statement.set_index(pd.Index(["Income Statement"]), inplace=True)
+    employ_cell = {"Employee Count": ""}
+    spacer_employee_count = pd.DataFrame(
+        data=list(employ_cell.values()), index=employ_cell.keys()
+    )
 
-    spacer_balance_sheet = pd.DataFrame([empty_cell])
-    spacer_balance_sheet.set_index(pd.Index(["Balance Sheet"]), inplace=True)
+    income_cell = {"Income Statement": ""}
+    spacer_income_statement = pd.DataFrame(
+        data=list(income_cell.values()), index=income_cell.keys()
+    )
 
-    spacer_cash_flow = pd.DataFrame([empty_cell])
-    spacer_cash_flow.set_index(pd.Index(["Cash Flow"]), inplace=True)
+    # spacer_balance_sheet = pd.DataFrame()
+    # spacer_balance_sheet.set_index(pd.Index(["Balance Sheet"]), inplace=True)
+
+    # spacer_cash_flow = pd.DataFrame()
+    # spacer_cash_flow.set_index(pd.Index(["Cash Flow"]), inplace=True)
 
     array = [
         spacer_income_statement,
         income_statement,
-        spacer_balance_sheet,
+        # spacer_balance_sheet,
         balance_sheet,
-        spacer_cash_flow,
+        # spacer_cash_flow,
         cash_flow,
         spacer_employee_count,
         employee_count,
