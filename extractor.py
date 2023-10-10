@@ -56,8 +56,8 @@ def get_cash_flow(symbol):
 
 def excel_inserter(
     dataframe: pd.DataFrame,
-    file_name,
-    sheetname,
+    file_name: str,
+    sheetname: str,
     append_by: str = 0,
     indexing: bool = False,
 ):
@@ -69,12 +69,12 @@ def excel_inserter(
         try:
             sheet = workbook[sheetname]  # Get the active sheet
         except KeyError:
-            workbook.create_sheet(sheetname)
+            sheet = workbook.create_sheet(sheetname)
 
     except FileNotFoundError:
         workbook = xl.Workbook()
         sheet = workbook.create_sheet(sheetname)
-        workbook.save("Data.xlsx")
+        workbook.save(file_name)
     location_row = sheet.max_row
     location_col = sheet.max_column
 
