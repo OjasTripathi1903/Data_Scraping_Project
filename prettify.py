@@ -28,18 +28,36 @@ cashFields = ["Operating Cash Flow", "Free Cash Flow"]
 
 
 # Extractor functions for each field
-def prettifyIncome(income_df):
-    df_output = income_df.loc[incomeFields].copy()
+def prettifyIncome(income_df: pd.DataFrame):
+    df_output = pd.DataFrame()
+    for i in range(len(incomeFields)):
+        try:
+            temp = income_df.loc[incomeFields[i]].copy()
+            df_output = pd.concat([df_output, temp], axis=1)
+        except KeyError:
+            continue
     return df_output
 
 
-def prettifyBalance(balance_df):
-    df_output = balance_df.loc[balanceFields].copy()
+def prettifyBalance(balance_df: pd.DataFrame):
+    df_output = pd.DataFrame()
+    for i in range(len(balanceFields)):
+        try:
+            temp = balance_df.loc[balanceFields[i]].copy()
+            df_output = pd.concat([df_output, temp], axis=1)
+        except KeyError:
+            continue
     return df_output
 
 
-def prettifyCash(cash_df):
-    df_output = cash_df.loc[cashFields].copy()
+def prettifyCash(cash_df: pd.DataFrame):
+    df_output = pd.DataFrame()
+    for i in range(len(cashFields)):
+        try:
+            temp = cash_df.loc[cashFields[i]].copy()
+            df_output = pd.concat([df_output, temp], axis=1)
+        except KeyError:
+            continue
     return df_output
 
 

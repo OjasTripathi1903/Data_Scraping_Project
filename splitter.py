@@ -94,6 +94,7 @@ def runner():
     first = second = third = fourth = pd.DataFrame()
     output_names = [first, second, third, fourth]
     masterframe = pd.read_excel("Data.xlsx", sheet_name="Master")
+    print(masterframe)
     x = split(masterframe, "MMM", output_names)
     return x
 
