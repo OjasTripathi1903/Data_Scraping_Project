@@ -1,6 +1,7 @@
 import yfinance as yf
 import pandas as pd
 import prettify as pfy
+import openpyxl as xl
 
 
 def get_employee_count(symbol):
@@ -53,14 +54,48 @@ def get_cash_flow(symbol):
     return output
 
 
-def save_to_excel(dataframe, filename):
+def excel_inserter(
+    dataframe: pd.DataFrame,
+    file_name,
+    sheetname,
+    append_by: str = 0,
+    indexing: bool = False,
+):
     # Save the DataFrame to an Excel sheet
-    dataframe.to_excel(filename, index=True)
+
+    try:
+        # Try to load the existing workbook
+        workbook = xl.load_workbook(file_name)
+        try:
+            sheet = workbook[sheetname]  # Get the active sheet
+        except KeyError:
+            workbook.create_sheet(sheetname)
+
+    except FileNotFoundError:
+        workbook = xl.Workbook()
+        sheet = workbook.create_sheet(sheetname)
+        workbook.save("Data.xlsx")
+    location_row = sheet.max_row
+    location_col = sheet.max_column
+
+    with pd.ExcelWriter(
+        path=file_name, engine="openpyxl", mode="a", if_sheet_exists="overlay"
+    ) as writer:
+        if append_by == "row":
+            dataframe.to_excel(
+                writer, sheet_name=sheetname, index=indexing, startrow=location_row
+            )
+        if append_by == "column":
+            dataframe.to_excel(
+                writer, sheet_name=sheetname, index=indexing, startcol=location_col
+            )
+        else:
+            dataframe.to_excel(writer, sheet_name=sheetname, index=indexing)
 
 
 def spacer_creater(index_title: str):
     data = {index_title: ""}
-    output = pd.DataFrame(data=data.values(), index=data.keys())
+    output = pd.DataFrame(list(data.values()), index=data.keys())
     return output
 
 
@@ -78,37 +113,24 @@ def master_output(symbol):
 
     # Create Spacers for neatness
 
-    # TODO: Turn this into functions for compactness and find better ways
+    # TODO: Loop
 
-    employ_cell = {"Employee Count": ""}
-    spacer_employee_count = pd.DataFrame(
-        data=list(employ_cell.values()), index=employ_cell.keys()
-    )
-
-    income_cell = {"Income Statement": ""}
-    spacer_income_statement = pd.DataFrame(
-        data=list(income_cell.values()), index=income_cell.keys()
-    )
-
-    # spacer_balance_sheet = pd.DataFrame()
-    # spacer_balance_sheet.set_index(pd.Index(["Balance Sheet"]), inplace=True)
-
-    # spacer_cash_flow = pd.DataFrame()
-    # spacer_cash_flow.set_index(pd.Index(["Cash Flow"]), inplace=True)
+    spacer_income_statement = spacer_creater("Income Statement")
+    spacer_balance_sheet = spacer_creater("Balance Sheet")
+    spacer_cash_flow = spacer_creater("Cash Flow")
+    spacer_employee_count = spacer_creater("Employee Count")
 
     array = [
-        spacer_income_statement,
         income_statement,
-        # spacer_balance_sheet,
         balance_sheet,
-        # spacer_cash_flow,
         cash_flow,
-        spacer_employee_count,
-        employee_count,
     ]
     # Save the data to an Excel sheet
-    combined = pd.concat(array)
-    save_to_excel(combined, "Data.xlsx")
+    combined = pd.concat(array, axis=0, join="outer")
+    excel_inserter(combined, "Data.xlsx", "Master", indexing=True)
+    excel_inserter(
+        employee_count, "Data.xlsx", "Master", append_by="row", indexing=True
+    )
     return combined
 
 
