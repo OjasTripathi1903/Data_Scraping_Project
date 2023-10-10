@@ -1,14 +1,17 @@
 import pandas as pd
 import time
 import openpyxl
+import extractor as ex
+
+sheets = ["2022", "2021", "2020", "2019"]
 
 
 # Check if the sheet already exists inside the book
-def sheet_exists(years, sheets: list[str]):
+def sheet_exists(year, sheets: list[str]):
     output = False
-    for year in sheets:
-        if years in sheets:
-            output = False
+    for years in sheets:
+        if year in sheets:
+            output = True
             return output
         else:
             continue
@@ -24,7 +27,7 @@ def split(raw_frame: pd.DataFrame, symbol, output_frames: list[pd.DataFrame]):
     book = openpyxl.load_workbook("Data.xlsx")
 
     sheetnames = book.sheetnames
-
+    print(sheetnames)
     for column in range(len(raw_frame.columns)):
         year = str(raw_frame.columns[column])
         #   TODO: Functionise this
@@ -73,35 +76,26 @@ def split(raw_frame: pd.DataFrame, symbol, output_frames: list[pd.DataFrame]):
             t2019 = pd.concat([t2019, output], axis=1)
         else:
             continue
-
         outputs = [t2022, t2021, t2020, t2019]
-        write_to_sheets(outputs, sheetnames, book)
-        # return output
-        # Dev Halted for ease
-
-
-def write_to_sheets(
-    inputs: list[pd.DataFrame],
-    sheetnames: list[str],
-    book: openpyxl.Workbook,
-):
-    for years in inputs:
-        sheetname = [name for name, value in locals().items() if value is years][0]
-        if sheetname in sheetnames:
-            empty = book[sheetname].max_column + 1
-        else:
-            empty = 0
-        with pd.ExcelWriter(
-            "Data.xlsx", engine="openpyxl", mode="a", if_sheet_exists="overlay"
-        ) as writer:
-            years.to_excel(writer, sheet_name=sheetname, index=False, startcol=empty)
+        for i in range(len(outputs)):
+            if outputs[i].empty:
+                continue
+            else:
+                ex.excel_inserter(
+                    dataframe=outputs[i],
+                    file_name="Data.xlsx",
+                    sheetname=sheets[i],
+                    append_by="column",
+                    indexing=False,
+                )
 
 
 def runner():
     first = second = third = fourth = pd.DataFrame()
     output_names = [first, second, third, fourth]
-    masterframe = pd.read_excel("Data.xlsx", sheet_name="Sheet1")
-    split(masterframe, "MMM", output_names)
+    masterframe = pd.read_excel("Data.xlsx", sheet_name="Master")
+    x = split(masterframe, "MMM", output_names)
+    return x
 
 
 if __name__ == "__main__":
