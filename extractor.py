@@ -132,7 +132,7 @@ def master_output(symbol):
     # Save the data to an Excel sheet
     combined = pd.concat(array, axis=1, join="outer")
     excel_inserter(
-        indexing=True,
+        indexing=False,
         dataframe=combined,
         file_name="Data.xlsx",
         sheetname="Master",
