@@ -28,6 +28,7 @@ cashFields = ["Operating Cash Flow", "Free Cash Flow"]
 
 
 # Extractor functions for each field
+# TODO: Functionise
 def prettifyIncome(income_df: pd.DataFrame):
     df_output = pd.DataFrame()
     indexes = list(income_df.columns)
@@ -52,22 +53,44 @@ def prettifyIncome(income_df: pd.DataFrame):
 
 def prettifyBalance(balance_df: pd.DataFrame):
     df_output = pd.DataFrame()
+    indexes = list(balance_df.columns)
+    print(indexes)
     for i in range(len(balanceFields)):
         try:
             temp = balance_df.loc[balanceFields[i]].copy()
+            print(temp)
             df_output = pd.concat([df_output, temp], axis=1)
         except KeyError:
-            df_output
+            data = []
+            for i in range(len(indexes)):
+                data.append("missing")
+
+            print(data)
+            temp = pd.Series(data, index=indexes, name=balanceFields[i])
+            print(temp)
+            df_output = pd.concat([df_output, temp], axis=1)
+            continue
     return df_output
 
 
 def prettifyCash(cash_df: pd.DataFrame):
     df_output = pd.DataFrame()
+    indexes = list(cash_df.columns)
+    print(indexes)
     for i in range(len(cashFields)):
         try:
             temp = cash_df.loc[cashFields[i]].copy()
+            print(temp)
             df_output = pd.concat([df_output, temp], axis=1)
         except KeyError:
+            data = []
+            for i in range(len(indexes)):
+                data.append("missing")
+
+            print(data)
+            temp = pd.Series(data, index=indexes, name=cashFields[i])
+            print(temp)
+            df_output = pd.concat([df_output, temp], axis=1)
             continue
     return df_output
 
