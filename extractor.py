@@ -9,7 +9,7 @@ def get_employee_count(symbol):
     output = logo.info
 
     filtered_data = {"Full Time Employees": [output.get("fullTimeEmployees")]}
-    employee_df = pd.DataFrame.from_dict(filtered_data, orient="index")
+    employee_df = pd.DataFrame.from_dict(filtered_data, orient="columns")
 
     return employee_df
 
@@ -55,11 +55,11 @@ def get_cash_flow(symbol):
 
 
 def excel_inserter(
+    indexing: bool,
     dataframe: pd.DataFrame,
     file_name: str,
     sheetname: str,
-    append_by: str = 0,
-    indexing: bool = False,
+    append_by: str,
 ):
     # Save the DataFrame to an Excel sheet
 
@@ -83,14 +83,22 @@ def excel_inserter(
     ) as writer:
         if append_by == "row":
             dataframe.to_excel(
-                writer, sheet_name=sheetname, index=indexing, startrow=location_row
+                writer,
+                sheet_name=sheetname,
+                index=True,
+                startrow=location_row,
+                header=indexing,
             )
         if append_by == "column":
             dataframe.to_excel(
-                writer, sheet_name=sheetname, index=indexing, startcol=location_col
+                writer,
+                sheet_name=sheetname,
+                index=True,
+                startcol=location_col,
+                header=indexing,
             )
         else:
-            dataframe.to_excel(writer, sheet_name=sheetname, index=indexing)
+            dataframe.to_excel(writer, sheet_name=sheetname, index=True, header=True)
 
 
 def spacer_creater(index_title: str):
@@ -99,7 +107,7 @@ def spacer_creater(index_title: str):
     return output
 
 
-logo = "MMM"
+logo = "AOS"
 
 
 def master_output(symbol):
@@ -120,16 +128,22 @@ def master_output(symbol):
     spacer_cash_flow = spacer_creater("Cash Flow")
     spacer_employee_count = spacer_creater("Employee Count")
 
-    array = [
-        income_statement,
-        balance_sheet,
-        cash_flow,
-    ]
+    array = [income_statement, balance_sheet, cash_flow]
     # Save the data to an Excel sheet
-    combined = pd.concat(array, axis=0, join="outer")
-    excel_inserter(combined, "Data.xlsx", "Master", indexing=True)
+    combined = pd.concat(array, axis=1, join="outer")
     excel_inserter(
-        employee_count, "Data.xlsx", "Master", append_by="row", indexing=True
+        indexing=True,
+        dataframe=combined,
+        file_name="Data.xlsx",
+        sheetname="Master",
+        append_by="row",
+    )
+    excel_inserter(
+        indexing=True,
+        dataframe=employee_count,
+        file_name="Data.xlsx",
+        sheetname="Master",
+        append_by="column",
     )
     return combined
 
