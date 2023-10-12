@@ -2,6 +2,7 @@ import yfinance as yf
 import pandas as pd
 import prettify as pfy
 import openpyxl as xl
+import time
 
 
 def get_employee_count(symbol):
@@ -10,7 +11,7 @@ def get_employee_count(symbol):
 
     filtered_data = {"Full Time Employees": [output.get("fullTimeEmployees")]}
     employee_df = pd.DataFrame.from_dict(filtered_data, orient="columns")
-
+    time.sleep(1)
     return employee_df
 
 
@@ -25,6 +26,7 @@ def get_income_statement(symbol):
     df = pd.DataFrame(income_statement)
     # Only output the specific values
     output = pfy.prettifyIncome(df)
+    time.sleep(1)
     return output
 
 
@@ -39,7 +41,7 @@ def get_balance_statement(symbol):
     df = pd.DataFrame(balancesheet)
 
     output = pfy.prettifyBalance(df)
-
+    time.sleep(1)
     return output
 
 
@@ -51,6 +53,7 @@ def get_cash_flow(symbol):
     # Create a Pandas DataFrame from the data
     df = pd.DataFrame(cash_flow)
     output = pfy.prettifyCash(df)
+    time.sleep(1)
     return output
 
 
@@ -107,7 +110,7 @@ def spacer_creater(index_title: str):
     return output
 
 
-logo = "AOS"
+logo = "AMZN"
 
 
 def master_output(symbol):
