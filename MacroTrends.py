@@ -1,6 +1,7 @@
 import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from bs4 import BeautifulSoup
 import re
 from extractor import excel_inserter
@@ -11,7 +12,7 @@ def scrape_website(url, symbol):
     chrome_options = Options()
     chrome_options.add_argument("--headless")  # Run Chrome in headless mode (no GUI)
     driver = webdriver.Chrome(
-        options=chrome_options
+        options=chrome_options,
     )  # No need for executable_path if ChromeDriver is in your system's PATH
 
     # Navigate to the URL
@@ -40,10 +41,10 @@ def scrape_website(url, symbol):
             if year_match:
                 year = year_match.group()  # Extract the matched number as the year
                 employee_number = strong_tag.text.strip()
-                output = {symbol: [employee_number]}
-                header = [year]
-                output = pd.DataFrame(output, index=header)
-                excel_inserter(True, output, "Data.xlsx", year, "row")
+                output = {year: [employee_number]}
+                index = [symbol]
+                output = pd.DataFrame(output, index=index)
+                excel_inserter(False, output, "Data.xlsx", year, "row")
 
     # Close the browser
     driver.quit()
